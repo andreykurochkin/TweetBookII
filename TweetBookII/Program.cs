@@ -1,20 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using TweetBookII.Data;
 using Microsoft.AspNetCore.Identity;
-using Swashbuckle.AspNetCore.Swagger;
+using TweetBookII.Infrastructure.Installers.Base;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.InstallServicesInAssembly(builder.Configuration);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultCoinnection");
-builder.Services.AddDbContext<DataContext>(_ =>_.UseSqlServer(connectionString!));
-builder.Services.AddIdentityCore<IdentityUser>().AddEntityFrameworkStores<DataContext>();
-builder.Services.AddSwaggerGen(_ => 
-{
-    _.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Tweetbook", Version = "v1" });
-});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

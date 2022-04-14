@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using TweetBookII.Data;
 using TweetBookII.Infrastructure.Installers.Base;
+using TweetBookII.Infrastructure.Services;
+using TweetBookII.Infrastructure.Services.Base;
 
 namespace TweetBookII.Infrastructure.Installers
 {
@@ -13,6 +15,7 @@ namespace TweetBookII.Infrastructure.Installers
             services.AddDbContext<DataContext>(_ => _.UseSqlServer(connectionString!));
             services.AddIdentityCore<IdentityUser>().AddEntityFrameworkStores<DataContext>();
 
+            services.AddSingleton<IPostsService, PostsService>();
         }
     }
 }

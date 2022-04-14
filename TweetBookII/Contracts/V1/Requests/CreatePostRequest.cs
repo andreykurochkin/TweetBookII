@@ -2,5 +2,5 @@
 
 public class CreatePostRequest
 {
-    public string Id { get; set; } = null!;
+    public Guid Id { get; set; }
 }

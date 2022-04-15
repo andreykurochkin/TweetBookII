@@ -11,11 +11,11 @@ namespace TweetBookII.Infrastructure.Installers
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("DefaultCoinnection");
+            var connectionString = configuration.GetSection("ConnectionString").Value;
             services.AddDbContext<DataContext>(_ => _.UseSqlServer(connectionString!));
             services.AddIdentityCore<IdentityUser>().AddEntityFrameworkStores<DataContext>();
 
-            services.AddSingleton<IPostsService, PostsService>();
+            services.AddScoped<IPostsService, PostsService>();
         }
     }
 }

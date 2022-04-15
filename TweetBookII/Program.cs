@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using TweetBookII.Data;
-using Microsoft.AspNetCore.Identity;
 using TweetBookII.Infrastructure.Installers.Base;
 
 var builder = WebApplication.CreateBuilder(args);

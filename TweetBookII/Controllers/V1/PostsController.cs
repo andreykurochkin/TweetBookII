@@ -17,25 +17,20 @@ public class PostsController : Controller
     }
 
     [HttpGet(ApiRoutes.Posts.GetAll)]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll()
     {
-        return Ok(_postsService.GetAll());
+        var posts = await _postsService.GetPostsAsync();
+        return Ok(posts);
     }
 
     [HttpPost(ApiRoutes.Posts.Create)]
-    public IActionResult Create([FromBody] CreatePostRequest request)
+    public async Task<IActionResult> Create([FromBody] CreatePostRequest request)
     {
         var post = new Post
         {
-            Id = request.Id
+            Name = request.Name
         };
-
-        if (post.Id == Guid.Empty)
-        {
-            post.Id = Guid.NewGuid();
-        }
-
-        _postsService.GetAll().Add(post);
+        await _postsService.CreatePostAsync(post);
 
         var baseUri = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
         var responseUri = $"{baseUri}/{ApiRoutes.Posts.Get.Replace("{id}", post.Id.ToString())}";
@@ -49,9 +44,9 @@ public class PostsController : Controller
     }
 
     [HttpGet(ApiRoutes.Posts.Get)]
-    public IActionResult Get([FromRoute] Guid postId)
+    public async Task<IActionResult> Get([FromRoute] Guid postId)
     {
-        var post = _postsService.GetAll().FirstOrDefault(_ => _.Id == postId);
+        var post = await _postsService.GetPostByIdAsync(postId);
         if (post is null)
         {
             return NotFound();
@@ -60,7 +55,7 @@ public class PostsController : Controller
     }
 
     [HttpPut(ApiRoutes.Posts.Update)]
-    public IActionResult Update([FromRoute] Guid postId, [FromBody] UpdatePostRequest updatePostRequest)
+    public async Task<IActionResult> Update([FromRoute] Guid postId, [FromBody] UpdatePostRequest updatePostRequest)
     {
         var post = new Post
         {
@@ -68,7 +63,7 @@ public class PostsController : Controller
             Name = updatePostRequest.Name
         };
 
-        var updated = _postsService.Update(post);
+        var updated = await _postsService.UpdatePostAsync(post);
         if (updated)
         {
             return Ok(post);
@@ -77,9 +72,9 @@ public class PostsController : Controller
     }
 
     [HttpDelete(ApiRoutes.Posts.Delete)]
-    public IActionResult Delete([FromRoute] Guid postId)
+    public async Task<IActionResult> Delete([FromRoute] Guid postId)
     {
-        var deleted = _postsService.Delete(postId);
+        var deleted = await _postsService.DeletePostAsync(postId);
         if (deleted)
         {
             return NoContent();

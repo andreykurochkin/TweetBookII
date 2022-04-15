@@ -75,4 +75,15 @@ public class PostsController : Controller
         }
         return NotFound(post);
     }
+
+    [HttpDelete(ApiRoutes.Posts.Delete)]
+    public IActionResult Delete([FromRoute] Guid postId)
+    {
+        var deleted = _postsService.Delete(postId);
+        if (deleted)
+        {
+            return NoContent();
+        }
+        return NotFound();
+    }
 }

@@ -20,17 +20,28 @@ public class PostsService : IPostsService
     }
     public List<Post> GetAll() => _posts;
 
-    public Post? GetById(Guid postId) => _posts.FirstOrDefault(post => post.Id == postId);
+    public Post? GetPostById(Guid postId) => _posts.FirstOrDefault(post => post.Id == postId);
 
     public bool Update(Post postToUpdate)
     {
-        var exists = _posts.Any(_ => _.Id == postToUpdate.Id);
+        var exists = GetPostById(postToUpdate.Id) is null;
         if (!exists)
         {
             return false;
         }
         var index = _posts.FindIndex(_ => _.Id == postToUpdate.Id);
         _posts[index] = postToUpdate;
+        return true;
+    }
+
+    public bool Delete(Guid postId)
+    {
+        var post = GetPostById(postId);
+        if (post is null)
+        {
+            return false;
+        }
+        _posts.Remove(post);
         return true;
     }
 }

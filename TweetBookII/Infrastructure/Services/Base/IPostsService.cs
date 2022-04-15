@@ -6,7 +6,8 @@ public interface IPostsService
 {
     List<Post> GetAll();
     
-    Post? GetById(Guid postId);
+    Post? GetPostById(Guid postId);
 
     bool Update(Post postToUpdate);
+    bool Delete(Guid postId);
 }

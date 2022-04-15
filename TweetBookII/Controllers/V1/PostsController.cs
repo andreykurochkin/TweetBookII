@@ -48,14 +48,31 @@ public class PostsController : Controller
         return Created(responseUri, response);
     }
 
-    [HttpPost(ApiRoutes.Posts.Get)]
-    public IActionResult Get([FromRoute] Guid id)
+    [HttpGet(ApiRoutes.Posts.Get)]
+    public IActionResult Get([FromRoute] Guid postId)
     {
-        var post = _postsService.GetAll().FirstOrDefault(_ => _.Id == id);
+        var post = _postsService.GetAll().FirstOrDefault(_ => _.Id == postId);
         if (post is null)
         {
             return NotFound();
         }
         return Ok(post);
+    }
+
+    [HttpPut(ApiRoutes.Posts.Update)]
+    public IActionResult Update([FromRoute] Guid postId, [FromBody] UpdatePostRequest updatePostRequest)
+    {
+        var post = new Post
+        {
+            Id = postId,
+            Name = updatePostRequest.Name
+        };
+
+        var updated = _postsService.Update(post);
+        if (updated)
+        {
+            return Ok(post);
+        }
+        return NotFound(post);
     }
 }

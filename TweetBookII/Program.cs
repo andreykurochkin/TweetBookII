@@ -16,13 +16,15 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-var swaggerOptions = new TweetBookII.Infrastructure.SwaggerOptions();
-app.Configuration.GetSection(nameof(TweetBookII.Infrastructure.SwaggerOptions)).Bind(swaggerOptions);
+var swaggerOptions = new TweetBookII.Infrastructure.Options.SwaggerOptions();
+app.Configuration.GetSection(nameof(TweetBookII.Infrastructure.Options.SwaggerOptions)).Bind(swaggerOptions);
 app.UseSwagger(_ => _.RouteTemplate = swaggerOptions.JsonRoute);
 app.UseSwaggerUI(_ => _.SwaggerEndpoint(swaggerOptions.UIEndPoint, swaggerOptions.Description));
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+ app.UseAuthentication();
 
 app.UseRouting();
 

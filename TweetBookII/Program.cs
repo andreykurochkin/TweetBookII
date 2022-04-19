@@ -24,12 +24,22 @@ app.UseSwaggerUI(_ => _.SwaggerEndpoint(swaggerOptions.UIEndPoint, swaggerOption
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
- app.UseAuthentication();
-
 app.UseRouting();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseAuthentication();
+app.UseAuthorization();
+
+//app.MapControllers();
+
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapControllers();
+
+//    //endpoints.MapControllerRoute(
+//    //    name: "default",
+//    //    pattern: "{controller=Home}/{action=Index}/{id?}");
+//});
+
+app.MapControllers();
 
 app.Run();

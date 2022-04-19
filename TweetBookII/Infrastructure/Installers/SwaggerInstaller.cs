@@ -9,7 +9,7 @@ public class SwaggerInstaller : IInstaller
     {
         services.AddSwaggerGen(_ =>
         {
-            _.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+            _.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "Tweetbook",
                 Version = "v1"
@@ -20,7 +20,8 @@ public class SwaggerInstaller : IInstaller
                 Description = "JWT Authorization header using bearer scheme",
                 Name = "Authorizaiton",
                 In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer"
             });
             _.AddSecurityRequirement(new OpenApiSecurityRequirement{
             {

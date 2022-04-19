@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TweetBookII.Contracts.V1;
 using TweetBookII.Contracts.V1.Requests;
 using TweetBookII.Contracts.V1.Responses;
@@ -7,6 +9,7 @@ using TweetBookII.Infrastructure.Services.Base;
 
 namespace TweetBookII.Controllers.V1;
 
+[Authorize/*(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)*/]
 public class PostsController : Controller
 {
     private readonly IPostsService _postsService;

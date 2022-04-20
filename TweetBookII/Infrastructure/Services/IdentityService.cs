@@ -53,6 +53,30 @@ public class IdentityService : IIdentityService
         return GenerateAuthenticationResult(persistentUser);
     }
 
+    public async Task<AuthorizationResult> LoginAsync(string email, string password)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user is null)
+        {
+            return new AuthorizationResult
+            {
+                Errors = new[] { "User does not exists" }
+            };
+        }
+
+        var passwordIsValid = await _userManager.CheckPasswordAsync(user, password);
+        if (!passwordIsValid)
+        {
+            return new AuthorizationResult
+            {
+                Errors = new string[] {
+                "Bad login/password pair"}
+            };
+        }
+
+        return GenerateAuthenticationResult(user);
+    }
+
     private AuthorizationResult GenerateAuthenticationResult(IdentityUser identityUser)
     {
         var tokenHandler = new JwtSecurityTokenHandler();

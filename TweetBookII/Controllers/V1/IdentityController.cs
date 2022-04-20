@@ -40,4 +40,28 @@ public class IdentityController : Controller
             Token = userRegistrationResult.Token!,
         });
     }
+
+    [HttpPost(ApiRoutes.Identity.Login)]
+    public async Task<IActionResult> Login([FromBody] UserLoginRequest userLoginRequest)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new AuthFailedResponse
+            {
+                Errors = ModelState.Values.SelectMany(_ => _.Errors.Select(_ => _.ErrorMessage))
+            });
+        }
+        var loginResult = await _identityService.LoginAsync(userLoginRequest.Email, userLoginRequest.Password);
+        if (!loginResult.Succeded)
+        {
+            return BadRequest(new AuthFailedResponse
+            {
+                Errors = loginResult.Errors
+            });
+        }
+        return Ok(new AuthSuccessResponse
+        {
+            Token = loginResult.Token!
+        });
+    }
 }

@@ -20,6 +20,13 @@ public class IdentityController : Controller
     [HttpPost(ApiRoutes.Identity.Registration)]
     public async Task<IActionResult> Register([FromBody] UserRegistrationRequest userRegistrationRequest)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new AuthFailedResponse 
+            { 
+                Errors = ModelState.Values.SelectMany(_ => _.Errors.Select(_ => _.ErrorMessage))
+            });
+        }
         var userRegistrationResult = await _identityService.RegisterUserAsync(userRegistrationRequest.Email!, userRegistrationRequest.Password!);
         if (!userRegistrationResult.Succeded)
         {

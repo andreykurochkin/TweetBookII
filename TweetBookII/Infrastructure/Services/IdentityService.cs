@@ -50,16 +50,21 @@ public class IdentityService : IIdentityService
             };
         }
 
+        return GenerateAuthenticationResult(persistentUser);
+    }
+
+    private AuthorizationResult GenerateAuthenticationResult(IdentityUser identityUser)
+    {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtOptions.Secret);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(JwtRegisteredClaimNames.Jti, persistentUser.Email),
-                new Claim(JwtRegisteredClaimNames.Sub, persistentUser.Email),
-                new Claim(JwtRegisteredClaimNames.Email, persistentUser.Email),
-                new Claim("id", persistentUser.Id),
+                new Claim(JwtRegisteredClaimNames.Jti, identityUser.Email),
+                new Claim(JwtRegisteredClaimNames.Sub, identityUser.Email),
+                new Claim(JwtRegisteredClaimNames.Email, identityUser.Email),
+                new Claim("id", identityUser.Id),
             }),
             Expires = DateTime.UtcNow.AddHours(2),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

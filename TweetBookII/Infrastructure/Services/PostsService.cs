@@ -19,7 +19,7 @@ public class PostsService : IPostsService
         return _dataContext.Posts.ToListAsync();
     }
 
-    public Task<Post?> GetPostByIdAsync(Guid postId) => _dataContext.Posts.FirstOrDefaultAsync(post => post.Id == postId);
+    public Task<Post?> GetPostByIdAsync(Guid postId) => _dataContext.Posts.AsNoTracking().FirstOrDefaultAsync(post => post.Id == postId);
 
     public async Task<bool> UpdatePostAsync(Post postToUpdate)
     {
@@ -45,5 +45,12 @@ public class PostsService : IPostsService
         _dataContext.Posts.Remove(post);
         var deleteResult = await _dataContext.SaveChangesAsync();
         return deleteResult > 0;
+    }
+
+    public async Task<bool> UserOwnsPost(string userId, Guid postId)
+    {
+        var post = await GetPostByIdAsync(postId);
+        var postOwnerId = post?.UserId ?? String.Empty;
+        return userId == postOwnerId;    
     }
 }

@@ -12,6 +12,7 @@ namespace TweetBookII.Infrastructure.Installers
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetSection("ConnectionString").Value;
+            //var connectionString = @"Server=db-server;Database=TweetbookII;User=sa;Password=Andrey1234";
             services.AddDbContext<DataContext>(_ => _.UseSqlServer(connectionString!));
             services.AddIdentityCore<IdentityUser>().AddEntityFrameworkStores<DataContext>();
 

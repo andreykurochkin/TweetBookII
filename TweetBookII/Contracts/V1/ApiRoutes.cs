@@ -24,5 +24,8 @@ public static class ApiRoutes
         public const string Registration = Base + "/identity/registration";
 
         public const string Login = Base + "/identity/login";
+        
+        public const string Refresh = Base + "/identity/refresh";
+
     }
 }

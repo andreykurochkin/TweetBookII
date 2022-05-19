@@ -15,9 +15,21 @@ public class MvcInstaller : IInstaller
     {
         var jwtOptions = new JwtOptions
         {
-            Secret = configuration.GetSection("JwtSettings").GetSection("Secret").Value!
+            Secret = configuration.GetSection("JwtSettings").GetSection("Secret").Value!,
+            TokenLIfetime = TimeSpan.Parse( configuration.GetSection("JwtSettings").GetSection("TokenLIfetime").Value!)
         };
 
+        var tokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtOptions.Secret)),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            RequireExpirationTime = false,
+            ValidateLifetime = false
+        };
+
+        services.AddSingleton(tokenValidationParameters);
 
         services.AddAuthentication(options =>
         {
@@ -28,15 +40,7 @@ public class MvcInstaller : IInstaller
         .AddJwtBearer(options =>
         {
             options.SaveToken = true;
-            options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtOptions.Secret)),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                RequireExpirationTime = false,
-                ValidateLifetime = false
-            };
+            options.TokenValidationParameters = tokenValidationParameters; 
         });
 
 

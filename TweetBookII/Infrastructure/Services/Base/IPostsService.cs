@@ -13,4 +13,6 @@ public interface IPostsService
     Task<bool> UpdatePostAsync(Post postToUpdate);
 
     Task<bool> DeletePostAsync(Guid postId);
+
+    Task<bool> UserOwnsPost(string userId, Guid postId);
 }

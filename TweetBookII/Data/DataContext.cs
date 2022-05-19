@@ -10,4 +10,6 @@ public class DataContext : IdentityDbContext
         : base(options) { }
 
     public DbSet<Post> Posts { get; set; } = null!;
+
+    public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 }

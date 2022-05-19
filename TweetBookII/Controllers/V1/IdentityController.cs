@@ -27,17 +27,18 @@ public class IdentityController : Controller
                 Errors = ModelState.Values.SelectMany(_ => _.Errors.Select(_ => _.ErrorMessage))
             });
         }
-        var userRegistrationResult = await _identityService.RegisterUserAsync(userRegistrationRequest.Email!, userRegistrationRequest.Password!);
-        if (!userRegistrationResult.Succeded)
+        var authResponse = await _identityService.RegisterUserAsync(userRegistrationRequest.Email!, userRegistrationRequest.Password!);
+        if (!authResponse.Succeded)
         {
             return BadRequest(new AuthFailedResponse
             {
-                Errors = userRegistrationResult.Errors
+                Errors = authResponse.Errors
             });
         }
         return Ok(new AuthSuccessResponse
         {
-            Token = userRegistrationResult.Token!,
+            Token = authResponse.Token!,
+            RefreshToken = authResponse.RefreshToken!
         });
     }
 
@@ -51,17 +52,39 @@ public class IdentityController : Controller
                 Errors = ModelState.Values.SelectMany(_ => _.Errors.Select(_ => _.ErrorMessage))
             });
         }
-        var loginResult = await _identityService.LoginAsync(userLoginRequest.Email, userLoginRequest.Password);
-        if (!loginResult.Succeded)
+        
+        var authResponse = await _identityService.LoginAsync(userLoginRequest.Email, userLoginRequest.Password);
+        
+        if (!authResponse.Succeded)
         {
             return BadRequest(new AuthFailedResponse
             {
-                Errors = loginResult.Errors
+                Errors = authResponse.Errors
             });
         }
+        
         return Ok(new AuthSuccessResponse
         {
-            Token = loginResult.Token!
+            Token = authResponse.Token!,
+            RefreshToken = authResponse.RefreshToken!
+        });
+    }
+
+    [HttpPost(ApiRoutes.Identity.Refresh)]
+    public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest refreshTokenRequest)
+    {
+        var authResponse = await _identityService.RefreshTokenAsync(refreshTokenRequest.Token, refreshTokenRequest.RefreshToken);
+        if (authResponse.Succeded)
+        {
+            return Ok(new AuthSuccessResponse
+            {
+                Token = authResponse.Token!,
+                RefreshToken = authResponse.RefreshToken!
+            });
+        }
+        return BadRequest(new AuthFailedResponse
+        {
+            Errors = authResponse.Errors
         });
     }
 }
